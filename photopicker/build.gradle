@@ -1,0 +1,20 @@
+apply plugin: 'com.android.library'
+
+group GROUP
+version VERSION_NAME
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.3"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 24
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-compat:24.2.1'
+}
+
+apply from: 'https://raw.github.com/viorgu/gradle-mvn-push/master/gradle-mvn-push.gradle'
