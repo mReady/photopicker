@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
@@ -127,6 +128,12 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
         }
 
         Intent pickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            pickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            pickerIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+
         pickerIntent.setType("image/*");
 
         Intent chooserIntent = Intent.createChooser(pickerIntent, "Select Picture");
@@ -155,6 +162,7 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
         Uri uri;
 
         if (data != null && data.getData() != null) {
+
             uri = BitmapUtils.copyToLocal(this, data.getData());
         } else {
             uri = expectedFileUri;

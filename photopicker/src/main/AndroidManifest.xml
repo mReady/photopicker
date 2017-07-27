@@ -6,6 +6,7 @@
             android:name=".PhotoPickerActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
     </application>
 
 </manifest>
