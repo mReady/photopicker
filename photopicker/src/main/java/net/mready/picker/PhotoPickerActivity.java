@@ -51,12 +51,7 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
             if (getIntent() != null && getIntent().getData() != null) {
                 expectedFileUri = getIntent().getData();
             } else {
-                File cacheDir = getExternalCacheDir();
-                if (cacheDir == null) {
-                    cacheDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-                }
-
-                expectedFileUri = Uri.fromFile(new File(cacheDir, "picture" + System.currentTimeMillis() + ".jpg"));
+                expectedFileUri = Uri.fromFile(new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "picture" + System.currentTimeMillis() + ".jpg"));
             }
 
             if (shouldRequestPermission()) {
