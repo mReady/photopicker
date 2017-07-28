@@ -4,34 +4,36 @@ import android.content.Context;
 import android.content.Intent;
 
 public final class PhotoPicker {
+
     private PhotoPicker() {
     }
 
-    public static Intent buildIntent(Context context) {
-        return new Intent(context, PhotoPickerActivity.class);
-    }
+    public static class Builder {
 
-    public static Intent buildIntent(Context context, int quality) {
-        Intent intent = new Intent(context, PhotoPickerActivity.class);
-        intent.putExtra(PhotoPickerActivity.EXTRA_COMPRESSION_QUALITY, quality);
+        private final Intent photoPickerIntent;
 
-        return intent;
-    }
+        public Builder(Context context) {
+            photoPickerIntent = new Intent(context, PhotoPickerActivity.class);
+        }
 
-    public static Intent buildIntent(Context context, int maxWidth, int maxHeight) {
-        Intent intent = new Intent(context, PhotoPickerActivity.class);
-        intent.putExtra(PhotoPickerActivity.EXTRA_REQ_WIDTH, maxWidth);
-        intent.putExtra(PhotoPickerActivity.EXTRA_REQ_HEIGHT, maxHeight);
+        public Builder maxWidth(int maxWidth) {
+            photoPickerIntent.putExtra(PhotoPickerActivity.EXTRA_REQ_WIDTH, maxWidth);
+            return this;
+        }
 
-        return intent;
-    }
+        public Builder maxHeight(int maxHeight) {
+            photoPickerIntent.putExtra(PhotoPickerActivity.EXTRA_REQ_HEIGHT, maxHeight);
+            return this;
+        }
 
-    public static Intent buildIntent(Context context, int maxWidth, int maxHeight, int quality) {
-        Intent intent = new Intent(context, PhotoPickerActivity.class);
-        intent.putExtra(PhotoPickerActivity.EXTRA_REQ_WIDTH, maxWidth);
-        intent.putExtra(PhotoPickerActivity.EXTRA_REQ_HEIGHT, maxHeight);
-        intent.putExtra(PhotoPickerActivity.EXTRA_COMPRESSION_QUALITY, quality);
+        public Builder quality(int quality) {
+            photoPickerIntent.putExtra(PhotoPickerActivity.EXTRA_COMPRESSION_QUALITY, quality);
+            return this;
+        }
 
-        return intent;
+        public Intent build() {
+            return photoPickerIntent;
+        }
+
     }
 }

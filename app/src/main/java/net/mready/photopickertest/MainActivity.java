@@ -8,8 +8,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
-
 import net.mready.picker.PhotoPicker;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,7 +23,12 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_take_picture).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(PhotoPicker.buildIntent(getApplicationContext(), size * 3, size * 3), REQ_CODE);
+                Intent photoPickerIntent = new PhotoPicker.Builder(getApplicationContext())
+                        .maxHeight(size * 3)
+                        .maxWidth(size * 3)
+                        .build();
+
+                startActivityForResult(photoPickerIntent, REQ_CODE);
             }
         });
     }
@@ -35,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQ_CODE && resultCode == Activity.RESULT_OK) {
-            Picasso.with(this).load(data.getData()).into(((ImageView) findViewById(R.id.iv_picture)));
+            ((ImageView) findViewById(R.id.iv_picture)).setImageURI(data.getData());
         }
     }
 }
