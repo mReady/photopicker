@@ -10,6 +10,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -50,7 +51,12 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
             if (getIntent() != null && getIntent().getData() != null) {
                 expectedFileUri = getIntent().getData();
             } else {
-                expectedFileUri = Uri.fromFile(new File(getExternalCacheDir(), "picture" + System.currentTimeMillis() + ".jpg"));
+                File cacheDir = getExternalCacheDir();
+                if (cacheDir == null) {
+                    cacheDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                }
+
+                expectedFileUri = Uri.fromFile(new File(cacheDir, "picture" + System.currentTimeMillis() + ".jpg"));
             }
 
             if (shouldRequestPermission()) {
@@ -162,7 +168,6 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
         Uri uri;
 
         if (data != null && data.getData() != null) {
-
             uri = BitmapUtils.copyToLocal(this, data.getData());
         } else {
             uri = expectedFileUri;
