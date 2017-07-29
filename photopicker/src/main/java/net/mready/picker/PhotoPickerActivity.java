@@ -25,6 +25,7 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
     public static final String EXTRA_REQ_WIDTH = "EXTRA_REQ_WIDTH";
     public static final String EXTRA_REQ_HEIGHT = "EXTRA_REQ_HEIGHT";
     public static final String EXTRA_COMPRESSION_QUALITY = "EXTRA_COMPRESSION_QUALITY";
+    public static final String EXTRA_TITLE = "EXTRA_TITLE";
 
     private static final String EXPECTED_FILE_URI = "EXPECTED_FILE_URI";
     private static final int REQUEST_PICTURE = 123;
@@ -34,6 +35,7 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
     private int reqWidth;
     private int reqHeight;
     private int quality;
+    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,11 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
         reqWidth = getIntent().getIntExtra(EXTRA_REQ_WIDTH, -1);
         reqHeight = getIntent().getIntExtra(EXTRA_REQ_HEIGHT, -1);
         quality = getIntent().getIntExtra(EXTRA_COMPRESSION_QUALITY, 70);
+        title = getIntent().getStringExtra(EXTRA_TITLE);
+
+        if (title == null) {
+            title = getString(R.string.default_picker_title);
+        }
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(EXPECTED_FILE_URI)) {
@@ -137,7 +144,7 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
 
         pickerIntent.setType("image/*");
 
-        Intent chooserIntent = Intent.createChooser(pickerIntent, "Select Picture");
+        Intent chooserIntent = Intent.createChooser(pickerIntent, title);
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,
                 cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
 

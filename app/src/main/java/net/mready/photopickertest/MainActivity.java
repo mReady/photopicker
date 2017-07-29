@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent photoPickerIntent = new PhotoPicker.Builder(getApplicationContext())
                         .maxHeight(size * 3)
                         .maxWidth(size * 3)
+                        .title(R.string.take_picture)
                         .build();
 
                 startActivityForResult(photoPickerIntent, REQ_CODE);

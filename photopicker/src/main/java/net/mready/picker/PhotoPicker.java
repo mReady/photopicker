@@ -11,8 +11,10 @@ public final class PhotoPicker {
     public static class Builder {
 
         private final Intent photoPickerIntent;
+        private final Context context;
 
         public Builder(Context context) {
+            this.context = context;
             photoPickerIntent = new Intent(context, PhotoPickerActivity.class);
         }
 
@@ -28,6 +30,16 @@ public final class PhotoPicker {
 
         public Builder quality(int quality) {
             photoPickerIntent.putExtra(PhotoPickerActivity.EXTRA_COMPRESSION_QUALITY, quality);
+            return this;
+        }
+
+        public Builder title(int resId) {
+            photoPickerIntent.putExtra(PhotoPickerActivity.EXTRA_TITLE, context.getString(resId));
+            return this;
+        }
+
+        public Builder title(CharSequence title) {
+            photoPickerIntent.putExtra(PhotoPickerActivity.EXTRA_TITLE, title);
             return this;
         }
 
