@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.widget.ImageView;
 
-import net.mready.photopicker.R;
 import net.mready.picker.PhotoPicker;
 
 public class MainActivity extends AppCompatActivity {
