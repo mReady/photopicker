@@ -10,7 +10,6 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -58,7 +57,7 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
             if (getIntent() != null && getIntent().getData() != null) {
                 expectedFileUri = getIntent().getData();
             } else {
-                expectedFileUri = Uri.fromFile(new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "picture" + System.currentTimeMillis() + ".jpg"));
+                expectedFileUri = Uri.fromFile(new File(getExternalCacheDir(), "picture" + System.currentTimeMillis() + ".jpg"));
             }
 
             if (shouldRequestPermission()) {
@@ -178,7 +177,6 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
         File file = new File(uri.getPath());
         if (file.exists()) {
             BitmapUtils.scaleBitmap(uri.getPath(), reqWidth, reqHeight);
-            BitmapUtils.normalizeRotation(uri.getPath());
             BitmapUtils.compressBitmap(uri.getPath(), quality);
 
             Intent result = new Intent();

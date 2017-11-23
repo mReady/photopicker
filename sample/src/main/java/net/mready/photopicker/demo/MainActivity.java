@@ -1,13 +1,13 @@
-package net.mready.photopickertest;
+package net.mready.photopicker.demo;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
-import android.view.View;
 import android.widget.ImageView;
 
+import net.mready.photopicker.R;
 import net.mready.picker.PhotoPicker;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,17 +20,14 @@ public class MainActivity extends AppCompatActivity {
 
         final int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 96, getResources().getDisplayMetrics());
 
-        findViewById(R.id.btn_take_picture).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent photoPickerIntent = new PhotoPicker.Builder(getApplicationContext())
-                        .maxHeight(size * 3)
-                        .maxWidth(size * 3)
-                        .title(R.string.take_picture)
-                        .build();
+        findViewById(R.id.btn_take_picture).setOnClickListener(v -> {
+            Intent photoPickerIntent = new PhotoPicker.Builder(getApplicationContext())
+                    .maxHeight(size * 3)
+                    .maxWidth(size * 3)
+                    .title(R.string.title_picker)
+                    .build();
 
-                startActivityForResult(photoPickerIntent, REQ_CODE);
-            }
+            startActivityForResult(photoPickerIntent, REQ_CODE);
         });
     }
 

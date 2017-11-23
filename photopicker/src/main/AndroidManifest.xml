@@ -6,6 +6,7 @@
         android:maxSdkVersion="18" />
 
     <application>
+
         <activity
             android:name=".PhotoPickerActivity"
             android:screenOrientation="portrait"

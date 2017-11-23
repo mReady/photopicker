@@ -17,78 +17,84 @@ import java.io.OutputStream;
 class BitmapUtils {
 
     static void scaleBitmap(String filePath, int maxWidth, int maxHeight) {
-        if (maxWidth <= 0 && maxHeight <= 0) {
-            return;
-        }
-
         Bitmap bitmap = null;
         Bitmap scaledBitmap = null;
 
         try {
+            ExifInterface exif = new ExifInterface(filePath);
+
             bitmap = loadSampledBitmap(filePath, maxWidth, maxHeight);
+            bitmap = normalizeRotation(bitmap, exif);
 
-            float bitmapRatio = (float) bitmap.getWidth() / (float) bitmap.getHeight();
+            if (maxWidth > 0 || maxHeight > 0) {
+                float bitmapRatio = (float) bitmap.getWidth() / (float) bitmap.getHeight();
 
-            int scaleWidth = bitmap.getWidth();
-            int scaleHeight = bitmap.getHeight();
+                int scaleWidth = bitmap.getWidth();
+                int scaleHeight = bitmap.getHeight();
 
-            if (maxWidth > 0 && maxHeight > 0) {
-                if (bitmapRatio > 1) {
-                    if (bitmap.getWidth() > maxWidth) {
-                        scaleWidth = maxWidth;
-                        scaleHeight = (int) (maxWidth / bitmapRatio);
-                    } else if (bitmap.getHeight() > maxHeight) {
-                        scaleWidth = (int) (maxHeight * bitmapRatio);
-                        scaleHeight = maxHeight;
+                if (maxWidth > 0 && maxHeight > 0) {
+                    if (bitmapRatio > 1) {
+                        if (bitmap.getWidth() > maxWidth) {
+                            scaleWidth = maxWidth;
+                            scaleHeight = (int) (maxWidth / bitmapRatio);
+                        } else if (bitmap.getHeight() > maxHeight) {
+                            scaleWidth = (int) (maxHeight * bitmapRatio);
+                            scaleHeight = maxHeight;
 
+                        }
+                    } else {
+                        if (bitmap.getHeight() > maxHeight) {
+                            scaleWidth = (int) (maxHeight * bitmapRatio);
+                            scaleHeight = maxHeight;
+                        } else if (bitmap.getWidth() > maxWidth) {
+                            scaleWidth = maxWidth;
+                            scaleHeight = (int) (maxWidth / bitmapRatio);
+                        }
                     }
-                } else {
-                    if (bitmap.getHeight() > maxHeight) {
-                        scaleWidth = (int) (maxHeight * bitmapRatio);
-                        scaleHeight = maxHeight;
-                    } else if (bitmap.getWidth() > maxWidth) {
-                        scaleWidth = maxWidth;
-                        scaleHeight = (int) (maxWidth / bitmapRatio);
+                } else if (maxWidth > 0) {
+                    if (bitmapRatio > 1) {
+                        if (bitmap.getWidth() > maxWidth) {
+                            scaleWidth = maxWidth;
+                            scaleHeight = (int) (maxWidth / bitmapRatio);
+                        }
+                    } else {
+                        if (bitmap.getWidth() > maxWidth) {
+                            scaleWidth = maxWidth;
+                            scaleHeight = (int) (maxWidth / bitmapRatio);
+                        }
+                    }
+                } else if (maxHeight > 0) {
+                    if (bitmapRatio > 1) {
+                        if (bitmap.getHeight() > maxHeight) {
+                            scaleWidth = (int) (maxHeight * bitmapRatio);
+                            scaleHeight = maxHeight;
+
+                        }
+                    } else {
+                        if (bitmap.getHeight() > maxHeight) {
+                            scaleWidth = (int) (maxHeight * bitmapRatio);
+                            scaleHeight = maxHeight;
+                        }
                     }
                 }
-            } else if (maxWidth > 0) {
-                if (bitmapRatio > 1) {
-                    if (bitmap.getWidth() > maxWidth) {
-                        scaleWidth = maxWidth;
-                        scaleHeight = (int) (maxWidth / bitmapRatio);
-                    }
-                } else {
-                    if (bitmap.getWidth() > maxWidth) {
-                        scaleWidth = maxWidth;
-                        scaleHeight = (int) (maxWidth / bitmapRatio);
-                    }
+
+                scaledBitmap = Bitmap.createScaledBitmap(bitmap, scaleWidth, scaleHeight, true);
+
+                if (bitmap != scaledBitmap) {
+                    bitmap.recycle();
+                    bitmap = null;
                 }
-            } else if (maxHeight > 0) {
-                if (bitmapRatio > 1) {
-                    if (bitmap.getHeight() > maxHeight) {
-                        scaleWidth = (int) (maxHeight * bitmapRatio);
-                        scaleHeight = maxHeight;
-
-                    }
-                } else {
-                    if (bitmap.getHeight() > maxHeight) {
-                        scaleWidth = (int) (maxHeight * bitmapRatio);
-                        scaleHeight = maxHeight;
-                    }
-                }
-            }
-
-            scaledBitmap = Bitmap.createScaledBitmap(bitmap, scaleWidth, scaleHeight, true);
-
-            if (bitmap != scaledBitmap) {
-                bitmap.recycle();
-                bitmap = null;
+            } else {
+                scaledBitmap = bitmap;
             }
 
             writeBitmap(scaledBitmap, filePath, 100);
 
             scaledBitmap.recycle();
             scaledBitmap = null;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
 
         } finally {
             if (bitmap != null && !bitmap.isRecycled()) {
@@ -106,12 +112,7 @@ class BitmapUtils {
             return uri;
         }
 
-        File cacheDir = context.getExternalCacheDir();
-        if (cacheDir == null) {
-            cacheDir = context.getCacheDir();
-        }
-
-        File outFile = new File(cacheDir, "picture" + System.currentTimeMillis() + ".jpg");
+        File outFile = new File(context.getExternalCacheDir(), "picture" + System.currentTimeMillis() + ".jpg");
 
         InputStream is = null;
         OutputStream os = null;
@@ -140,60 +141,40 @@ class BitmapUtils {
         }
     }
 
-    static void normalizeRotation(String filePath) {
-        Bitmap bitmap = null;
-        Bitmap rotatedBitmap = null;
+    private static Bitmap normalizeRotation(Bitmap bitmap, ExifInterface exif) {
+        Bitmap rotatedBitmap;
 
-        try {
-            ExifInterface exif = new ExifInterface(filePath);
+        String orientationString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
+        int orientation = orientationString != null ? Integer.parseInt(orientationString) : ExifInterface.ORIENTATION_NORMAL;
 
-            String orientationString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
-            int orientation = orientationString != null ? Integer.parseInt(orientationString) : ExifInterface.ORIENTATION_NORMAL;
+        //int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
 
-            int rotationAngle = 0;
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    rotationAngle = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    rotationAngle = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    rotationAngle = 270;
-                    break;
-            }
-
-            if (rotationAngle == 0) {
-                return;
-            }
-
-            bitmap = BitmapFactory.decodeFile(filePath);
-
-            Matrix matrix = new Matrix();
-            matrix.postRotate(rotationAngle);
-
-            rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
-                    bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-            bitmap.recycle();
-            bitmap = null;
-
-            writeBitmap(rotatedBitmap, filePath, 100);
-
-            rotatedBitmap.recycle();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        } finally {
-            if (bitmap != null && !bitmap.isRecycled()) {
-                bitmap.recycle();
-            }
-
-            if (rotatedBitmap != null && !rotatedBitmap.isRecycled()) {
-                rotatedBitmap.recycle();
-            }
+        int rotationAngle = 0;
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                rotationAngle = 90;
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                rotationAngle = 180;
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                rotationAngle = 270;
+                break;
         }
+
+        if (rotationAngle == 0) {
+            return bitmap;
+        }
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(rotationAngle);
+
+        rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+        bitmap.recycle();
+
+        return rotatedBitmap;
     }
 
     static void compressBitmap(String filePath, int quality) {
@@ -217,6 +198,7 @@ class BitmapUtils {
             fos = new FileOutputStream(filePath);
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fos);
             fos.close();
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
@@ -234,7 +216,9 @@ class BitmapUtils {
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(filePath, options);
 
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        if (reqWidth > 0 || reqHeight > 0) {
+            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        }
 
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(filePath, options);
