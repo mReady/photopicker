@@ -13,102 +13,11 @@
         android:layout_height="wrap_content"
         android:text="Pick Image" />
 
-    <FrameLayout
+    <ImageView
+        android:id="@+id/iv_picture"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="96dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/black" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="96dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/black" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="96dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/black" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="96dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/black" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <View
-                android:layout_width="96dp"
-                android:layout_height="match_parent" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@android:color/black" />
-
-            <View
-                android:layout_width="96dp"
-                android:layout_height="match_parent" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@android:color/black" />
-
-            <View
-                android:layout_width="96dp"
-                android:layout_height="match_parent" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@android:color/black" />
-
-            <View
-                android:layout_width="96dp"
-                android:layout_height="match_parent" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/black" />
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/iv_picture"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitStart" />
-
-    </FrameLayout>
 
 </LinearLayout>

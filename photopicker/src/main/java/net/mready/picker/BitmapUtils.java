@@ -32,7 +32,7 @@ import java.io.OutputStream;
 
 class BitmapUtils {
 
-    static void scaleBitmap(String filePath, int maxWidth, int maxHeight) {
+    static void processImage(String filePath, int maxWidth, int maxHeight, int quality) {
         Bitmap bitmap = null;
         Bitmap scaledBitmap = null;
 
@@ -104,7 +104,7 @@ class BitmapUtils {
                 scaledBitmap = bitmap;
             }
 
-            writeBitmap(scaledBitmap, filePath, 100);
+            writeBitmap(scaledBitmap, filePath, quality);
 
             scaledBitmap.recycle();
             scaledBitmap = null;
@@ -163,8 +163,6 @@ class BitmapUtils {
         String orientationString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
         int orientation = orientationString != null ? Integer.parseInt(orientationString) : ExifInterface.ORIENTATION_NORMAL;
 
-        //int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
         int rotationAngle = 0;
         switch (orientation) {
             case ExifInterface.ORIENTATION_ROTATE_90:
@@ -191,21 +189,6 @@ class BitmapUtils {
         bitmap.recycle();
 
         return rotatedBitmap;
-    }
-
-    static void compressBitmap(String filePath, int quality) {
-        Bitmap bitmap = null;
-
-        try {
-            bitmap = BitmapFactory.decodeFile(filePath);
-            writeBitmap(bitmap, filePath, quality);
-            bitmap.recycle();
-            bitmap = null;
-        } finally {
-            if (bitmap != null && !bitmap.isRecycled()) {
-                bitmap.recycle();
-            }
-        }
     }
 
     private static void writeBitmap(Bitmap bitmap, String filePath, int quality) {

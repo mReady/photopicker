@@ -192,8 +192,7 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
 
         File file = new File(uri.getPath());
         if (file.exists()) {
-            BitmapUtils.scaleBitmap(uri.getPath(), reqWidth, reqHeight);
-            BitmapUtils.compressBitmap(uri.getPath(), quality);
+            BitmapUtils.processImage(uri.getPath(), reqWidth, reqHeight, quality);
 
             Intent result = new Intent();
             result.setData(uri);
