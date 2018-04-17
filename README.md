@@ -12,13 +12,21 @@ A simple to use and very light weight Photo Picker written to reduce the boilerp
 * Normalize rotation
 
 ## Important
+If your app has and request the `WRITE_EXTERNAL_STORAGE` permission you need to add ```tools:node="replace"``` to the manifest permission(see the below example).
+
+```
+ <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:node="replace" />
+```
+
 This picker does not require `CAMERA` permission in `AndroidManifest`, in case an app does have `CAMERA` permission in manifest, the picker will check if the permission was already given, if not, it will request `CAMERA` permission
 
 ## Installation
 
 ```
 dependencies {
-    implementation 'net.mready.picker:photopicker:1.0.3'
+    implementation 'net.mready.picker:photopicker:1.0.4'
 }
 ```
 
