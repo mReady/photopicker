@@ -128,7 +128,7 @@ class BitmapUtils {
             return uri;
         }
 
-        File outFile = new File(context.getExternalCacheDir(), "picture" + System.currentTimeMillis() + ".jpg");
+        File outFile = new File(context.getCacheDir(), "picture" + System.currentTimeMillis() + ".jpg");
 
         InputStream is = null;
         OutputStream os = null;
