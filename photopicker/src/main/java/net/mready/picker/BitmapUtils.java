@@ -96,6 +96,9 @@ class BitmapUtils {
 
                 scaledBitmap = Bitmap.createScaledBitmap(bitmap, scaleWidth, scaleHeight, true);
 
+                exif.setAttribute(ExifInterface.TAG_IMAGE_WIDTH, String.valueOf(scaleWidth));
+                exif.setAttribute(ExifInterface.TAG_IMAGE_LENGTH, String.valueOf(scaleHeight));
+
                 if (bitmap != scaledBitmap) {
                     bitmap.recycle();
                     bitmap = null;
@@ -105,6 +108,7 @@ class BitmapUtils {
             }
 
             writeBitmap(scaledBitmap, filePath, quality);
+            exif.saveAttributes();
 
             scaledBitmap.recycle();
             scaledBitmap = null;
@@ -187,6 +191,8 @@ class BitmapUtils {
                 bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
         bitmap.recycle();
+
+        exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_NORMAL));
 
         return rotatedBitmap;
     }
