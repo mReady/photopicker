@@ -26,7 +26,7 @@ This picker does not require `CAMERA` permission in `AndroidManifest`, in case a
 
 ```
 dependencies {
-    implementation 'net.mready.picker:photopicker:1.0.5'
+    implementation 'net.mready.picker:photopicker:1.0.6'
 }
 ```
 
