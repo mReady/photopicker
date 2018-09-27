@@ -108,7 +108,12 @@ class BitmapUtils {
             }
 
             writeBitmap(scaledBitmap, filePath, quality);
-            exif.saveAttributes();
+
+            try {
+                exif.saveAttributes();
+            } catch (IOException e) {
+                //ignored we don't care if exif write fails, also PNG's do not have exif info
+            }
 
             scaledBitmap.recycle();
             scaledBitmap = null;
@@ -203,7 +208,6 @@ class BitmapUtils {
             fos = new FileOutputStream(filePath);
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fos);
             fos.close();
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
