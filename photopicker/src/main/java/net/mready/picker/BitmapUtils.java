@@ -110,7 +110,10 @@ class BitmapUtils {
             writeBitmap(scaledBitmap, filePath, quality);
 
             try {
-                exif.saveAttributes();
+                //ExifInterface writes null if the thumbnail is corrupt and the output stream throws NullPointerException
+                if (exif.getThumbnail() != null) {
+                    exif.saveAttributes();
+                }
             } catch (IOException e) {
                 //ignored we don't care if exif write fails, also PNG's do not have exif info
             }
