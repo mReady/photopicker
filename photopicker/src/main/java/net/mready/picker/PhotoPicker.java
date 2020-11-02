@@ -22,6 +22,22 @@ import android.support.annotation.StringRes;
 
 public final class PhotoPicker {
 
+    /**
+     * If set, the picker would show a picker that
+     * allows you to choose between camera and gallery (the default).
+     */
+    public static final int PICKER_MODE_DEFAULT = 1;
+
+    /**
+     * If set, the picker would automatically open the camera
+     */
+    public static final int PICKER_MODE_CAMERA = 2;
+
+    /**
+     * If set, the picker would automatically open the gallery
+     */
+    public static final int PICKER_MODE_GALLERY = 3;
+
     private PhotoPicker() {
     }
 
@@ -32,6 +48,7 @@ public final class PhotoPicker {
         private int maxWidth = -1;
         private int maxHeight = -1;
         private int quality = 70;
+        private int pickerMode = 0;
 
         /**
          * Creates a builder for Photo Picker
@@ -98,6 +115,17 @@ public final class PhotoPicker {
         }
 
         /**
+         * Sets the picker mode using an int value for selection
+         *
+         * @param mode pickerMode
+         * @return This Builder object to allow for chaining of calls to set methods
+         */
+        public Builder pickerMode(int mode) {
+            this.pickerMode = mode;
+            return this;
+        }
+
+        /**
          * Builds the picker intent
          *
          * @return Photo Picker Intent
@@ -108,6 +136,7 @@ public final class PhotoPicker {
             photoPickerIntent.putExtra(PhotoPickerActivity.EXTRA_REQ_HEIGHT, maxHeight);
             photoPickerIntent.putExtra(PhotoPickerActivity.EXTRA_COMPRESSION_QUALITY, quality);
             photoPickerIntent.putExtra(PhotoPickerActivity.EXTRA_TITLE, title);
+            photoPickerIntent.putExtra(PhotoPickerActivity.EXTRA_PICKER_MODE, pickerMode);
             return photoPickerIntent;
 
         }

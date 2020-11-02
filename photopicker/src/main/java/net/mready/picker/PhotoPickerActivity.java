@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,17 +31,21 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.mready.picker.PhotoPicker.PICKER_MODE_CAMERA;
+import static net.mready.picker.PhotoPicker.PICKER_MODE_GALLERY;
 
 public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRequestPermissionsResultCallback {
     public static final String EXTRA_REQ_WIDTH = "EXTRA_REQ_WIDTH";
     public static final String EXTRA_REQ_HEIGHT = "EXTRA_REQ_HEIGHT";
     public static final String EXTRA_COMPRESSION_QUALITY = "EXTRA_COMPRESSION_QUALITY";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+    public static final String EXTRA_PICKER_MODE = "EXTRA_PICKER_MODE";
 
     private static final String EXPECTED_FILE_URI = "EXPECTED_FILE_URI";
     private static final int REQUEST_PICTURE = 123;
@@ -53,6 +56,7 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
     private int reqHeight;
     private int quality;
     private String title;
+    private int pickerMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,7 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
         reqHeight = getIntent().getIntExtra(EXTRA_REQ_HEIGHT, -1);
         quality = getIntent().getIntExtra(EXTRA_COMPRESSION_QUALITY, 70);
         title = getIntent().getStringExtra(EXTRA_TITLE);
+        pickerMode = getIntent().getIntExtra(EXTRA_PICKER_MODE, 0);
 
         if (title == null) {
             title = getString(R.string.default_picker_title);
@@ -77,12 +82,12 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
             } else {
                 expectedFileUri = Uri.fromFile(new File(getExternalCacheDir(), "picture" + System.currentTimeMillis() + ".jpg"));
             }
+        }
 
-            if (shouldRequestPermission()) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_PERMISSION_CAMERA);
-            } else {
-                dispatchIntent();
-            }
+        if (shouldRequestPermission()) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_PERMISSION_CAMERA);
+        } else {
+            dispatchIntent();
         }
     }
 
@@ -136,6 +141,34 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
     }
 
     private Intent createChooserIntent() {
+        if (pickerMode == PICKER_MODE_CAMERA) {
+            Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            Uri uri;
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                uri = expectedFileUri;
+            } else {
+                uri = FileProvider.getUriForFile(this, "net.mready.photopicker.provider", new File(expectedFileUri.getPath()));
+            }
+
+            captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+
+            return captureIntent;
+        }
+
+        if (pickerMode == PICKER_MODE_GALLERY) {
+            Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                galleryIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                galleryIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+
+            galleryIntent.setType("image/*");
+
+            return galleryIntent;
+        }
+
         Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, expectedFileUri);
 

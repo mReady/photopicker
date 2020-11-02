@@ -11,6 +11,18 @@
             android:name=".PhotoPickerActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
+        <provider
+            android:name="net.mready.picker.FileProvider"
+            android:authorities="net.mready.photopicker.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+
+        </provider>
+
     </application>
 
 </manifest>
