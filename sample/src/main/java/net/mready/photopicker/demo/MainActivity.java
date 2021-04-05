@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
                         .maxHeight(size * 3)
                         .maxWidth(size * 3)
                         .title(R.string.title_picker)
-                        .pickerMode(PhotoPicker.PICKER_MODE_GALLERY)
                         .build();
 
                 MainActivity.this.startActivityForResult(photoPickerIntent, REQ_CODE);

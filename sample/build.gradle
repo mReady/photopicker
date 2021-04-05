@@ -9,6 +9,8 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
+
+        resValue 'string', 'app_file_provider_authorities', '${applicationId}'
     }
 
     buildTypes {

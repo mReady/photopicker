@@ -148,7 +148,7 @@ public class PhotoPickerActivity extends Activity implements ActivityCompat.OnRe
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                 uri = expectedFileUri;
             } else {
-                uri = FileProvider.getUriForFile(this, "net.mready.photopicker.provider", new File(expectedFileUri.getPath()));
+                uri = FileProvider.getUriForFile(this, getString(R.string.app_file_provider_authorities), new File(expectedFileUri.getPath()));
             }
 
             captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);

@@ -20,13 +20,25 @@ If your app has and request the `WRITE_EXTERNAL_STORAGE` permission you need to 
         tools:node="replace" />
 ```
 
+You also have to specify the FileProvider authorization using a resValue in your app's build.gradle
+
+```
+ defaultConfig {
+        .
+        .
+        .
+ 
+         resValue 'string', 'app_file_provider_authorities', '${applicationId}'
+     }
+```
+
 This picker does not require `CAMERA` permission in `AndroidManifest`, in case an app does have `CAMERA` permission in manifest, the picker will check if the permission was already given, if not, it will request `CAMERA` permission
 
 ## Installation
 
 ```
 dependencies {
-    implementation 'net.mready.picker:photopicker:1.0.10'
+    implementation 'net.mready.picker:photopicker:1.0.11'
 }
 ```
 
