@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'com.vanniktech.maven.publish'
 
 android {
     compileSdkVersion 27
@@ -15,35 +15,4 @@ android {
 dependencies {
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:exifinterface:27.1.1'
-}
-
-task androidJavadocs(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
-
-task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
-    getArchiveClassifier().set('javadoc')
-    from androidJavadocs.destinationDir
-}
-
-task androidSourcesJar(type: Jar) {
-    getArchiveClassifier().set('sources')
-    from android.sourceSets.main.java.srcDirs
-}
-
-artifacts {
-    archives androidSourcesJar
-    //archives androidJavadocsJar
-}
-
-publish {
-    userOrg = POM_DEVELOPER_ID
-    groupId = GROUP
-    artifactId = POM_ARTIFACT_ID
-    publishVersion = VERSION_NAME
-    uploadName = POM_NAME
-    licences = ['Apache-2.0']
-    desc = POM_DESCRIPTION
-    website = POM_URL
 }
